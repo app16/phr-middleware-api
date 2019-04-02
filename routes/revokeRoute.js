@@ -7,7 +7,7 @@ module.exports = function(app) {
 	const yaml = require('js-yaml');
 	const { FileSystemWallet, Gateway } = require('fabric-network');
 
-	const wallet = new FileSystemWallet(__dirname +'/config/identity/User1/wallet');
+	const wallet = new FileSystemWallet(__dirname +'/../config/identity/User1/wallet');
 
 	async function main() {
 	  // A gateway defines the peers used to access Fabric networks
@@ -19,7 +19,8 @@ module.exports = function(app) {
 	    const userName = 'User1@a.example.com';
 	    // Load connection profile; will be used to locate a gateway
 	    //let connectionProfile = yaml.safeLoad(fs.readFileSync('./networkConnection_multinode.yaml', 'utf8'));
-	    let connectionProfile = yaml.safeLoad(fs.readFileSync(__dirname + '/../config/networkConnection.yaml', 'utf8'));
+	    let connectionProfile = yaml.safeLoad(fs.readFileSync(__dirname + '/../config/networkConnection_multinode.yaml', 'utf8'));
+
 	    // Set connection options; identity and wallet
 	    let connectionOptions = {
 	      identity: userName,
@@ -43,20 +44,44 @@ module.exports = function(app) {
 	    const contract = await network.getContract('reference');
 
 	    // issue commercial paper
-	    console.log('Submit commercial paper issue transaction.');
+			console.log('Submit commercial paper issue transaction.');
+			
+			const channel = await network.getChannel();
+			const requestTxn = contract.createTransaction('revoke');
+			var txnID = requestTxn.getTransactionID();
 
-	    const issueResponse = await contract.submitTransaction('revoke', req.body.reqID, req.body.patID);
+	    // issue commercial paper
+	    console.log('Submit response transaction.');
+			console.log(txnID);
+			console.log(txnID._transaction_id);
+
+			const issueResponse = await requestTxn.submit(req.body.reqID, req.body.patID);	    
+			const queryTxn = await	channel.queryBlockByTxID(txnID._transaction_id);
+			console.log(queryTxn);
+
+			const channelQuery = await channel.queryInfo();
+			console.log(channelQuery.height.low);
+
+			const respObject = {
+				transactionID : txnID._transaction_id,
+				blockNumber : queryTxn.header.number,
+				prevHash : queryTxn.header.previous_hash,
+				dataHash : queryTxn.header.data_hash
+			};
 
 	    // process response
 	    console.log('Process issue transaction response.');
+			console.log('Transaction complete.');
+			
+			console.log(respObject);
+			res.send(respObject);
 
-	    console.log('Transaction complete.');
 
 	  } catch (error) {
 
 	    console.log(`Error processing transaction. ${error}`);
-	    console.log(error.stack);
-
+			console.log(error.stack);
+			
 	  } finally {
 
 	    // Disconnect from the gateway
@@ -68,7 +93,6 @@ module.exports = function(app) {
 	main().then(() => {
 
 	  console.log('Issue program complete.');
-	  res.send("Issue program complete.");
 
 	}).catch((e) => {
 	  res.send("Issue program exception.");

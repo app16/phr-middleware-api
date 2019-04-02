@@ -6,7 +6,7 @@ module.exports = function(app) {
 	const yaml = require('js-yaml');
 	const { FileSystemWallet, Gateway } = require('fabric-network');
 
-	const wallet = new FileSystemWallet(__dirname +'/config/identity/User1/wallet');
+	const wallet = new FileSystemWallet(__dirname +'/../config/identity/User1/wallet');
 
 	async function main() {
 
@@ -22,7 +22,7 @@ module.exports = function(app) {
 
 	    // Load connection profile; will be used to locate a gateway
 	    //let connectionProfile = yaml.safeLoad(fs.readFileSync('./networkConnection_multinode.yaml', 'utf8'));
-	    let connectionProfile = yaml.safeLoad(fs.readFileSync(__dirname + '/../config/networkConnection.yaml', 'utf8'));
+	    let connectionProfile = yaml.safeLoad(fs.readFileSync(__dirname + '/../config/networkConnection_multinode.yaml', 'utf8'));
 
 	    // Set connection options; identity and wallet
 	    let connectionOptions = {
@@ -47,13 +47,28 @@ module.exports = function(app) {
 	    const contract = await network.getContract('reference');
 
 	    // issue commercial paper
-	    console.log('Submit commercial paper issue transaction.');
+			console.log('Submit commercial paper issue transaction.');
+			
+			const channel = await network.getChannel();
+			const requestTxn = contract.createTransaction('queryPatientRequests');
+			var txnID = requestTxn.getTransactionID();
 
-	    const issueResponse = await contract.submitTransaction('queryPatientRequests');
+	    // issue commercial paper
+	    console.log('Submit response transaction.');
+			console.log(txnID);
+			console.log(txnID._transaction_id);
+
+	    const issueResponse = await requestTxn.submit();
+	    
+			const queryTxn = await	channel.queryBlockByTxID(txnID._transaction_id);
+
+			console.log(queryTxn);
+
 	    const stringResponse = JSON.parse(issueResponse.toString());
 
 	    console.log(stringResponse);
-	    res.send(stringResponse);
+			res.send(stringResponse[0].Record.ProviderID);
+			
 	    // process response
 	    console.log('Process issue transaction response.');
 
