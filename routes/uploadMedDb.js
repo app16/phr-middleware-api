@@ -8,7 +8,6 @@ var crypto = require('crypto');
 module.exports = function(app) {    
     var MedHash
     app.post("/uploadMed", (req, res) => {
-         // A gateway defines the peers used to access Fabric networks
          console.log('dbconnect');
          const MedID = '';
          const connection = mysql.createConnection({
@@ -49,6 +48,9 @@ module.exports = function(app) {
         const storeHash = (callback) => {
             setTimeout(async () =>{
                 const gateway = new Gateway();
+                //userID = req.body.userid;
+
+                //const wallet = new FileSystemWallet(__dirname +'/../config/identity/'+userID+'/wallet');
                 const wallet = new FileSystemWallet(__dirname +'/../config/identity/User1/wallet');
                 try {
                     const userName = 'User1@a.example.com';

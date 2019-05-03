@@ -9,7 +9,7 @@ const fs = require('fs');
 const { FileSystemWallet, X509WalletMixin } = require('fabric-network');
 const path = require('path');
 
-const fixtures = path.resolve(__dirname, '/home/philips/fabric/Multinode-al/fabric-starter-a/artifacts');
+const fixtures = path.resolve(__dirname, '/home/philips/fabric/Multinode-al/fabric-starter-a/artifacts/crypto-config/peerOrganizations/a.example.com/users/User1@a.example.com/msp');
 
 // A wallet stores a collection of identities
 const wallet = new FileSystemWallet('./config/identity/User1/wallet');
@@ -20,9 +20,9 @@ async function main() {
     try {
 
         // Identity to credentials to be stored in the wallet
-        const credPath = path.join(fixtures, '/crypto-config/peerOrganizations/a.example.com/users/User1@a.example.com');
-        const cert = fs.readFileSync(path.join(credPath, '/msp/signcerts/User1@a.example.com-cert.pem')).toString();
-        const key = fs.readFileSync(path.join(credPath, '/msp/keystore/6e99ee8685d5ad3f09c6ced0fa0a0788b7702308065837ac5a259a8b3820866f_sk')).toString();
+        const credPath = path.join(fixtures, '/');
+        const cert = fs.readFileSync(path.join(credPath, '/signcerts/User1@a.example.com-cert.pem')).toString();
+        const key = fs.readFileSync(path.join(credPath, '/keystore/3081068da93b88f0491c382469a49937d95a166c1c605fb07fdb607a3dcf9842_sk')).toString();
 
         // Load credentials into wallet
         const identityLabel = 'User1@a.example.com';

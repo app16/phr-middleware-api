@@ -6,9 +6,10 @@ module.exports = function(app) {
 	const fs = require('fs');
 	const yaml = require('js-yaml');
 	const { FileSystemWallet, Gateway } = require('fabric-network');
+	//userID = req.body.userid;
 
+	//const wallet = new FileSystemWallet(__dirname +'/../config/identity/'+userID+'/wallet');
 	const wallet = new FileSystemWallet(__dirname +'/../config/identity/User1/wallet');
-
 	async function main() {
 
 	  // A gateway defines the peers used to access Fabric networks
@@ -71,7 +72,7 @@ module.exports = function(app) {
 				}
 				const queryTxn = await	channel.queryBlockByTxID(txnID._transaction_id);
 				console.log(queryTxn);
-				
+
 				const respObject = {
 					transactionID : txnID._transaction_id,
 					blockNumber : queryTxn.header.number,

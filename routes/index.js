@@ -12,7 +12,7 @@ const queryPatientDB = require('./queryPatientdb');
 const proViewRoute = require('./proViewRoute');
 const queryProView = require('./queryProView');
 const chaindashboard = require('./chainDashboard');
-
+const register = require('./registerRoute');
 
 
 
@@ -31,5 +31,6 @@ module.exports = function (app){
     proViewRoute(app);
     queryProView(app);
     chaindashboard(app);
+    register(app);
 
 }

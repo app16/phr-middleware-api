@@ -132,7 +132,7 @@ organizations:
     # this way. The SDK should allow applications to set the org admin identity via APIs, and only use
     # this route as an alternative when it exists.
     adminPrivateKey:
-      path: /home/philips/fabric/Multinode-al/fabric-starter-a/artifacts/crypto-config/peerOrganizations/a.example.com/users/Admin@a.example.com/msp/keystore/80628c2ed9a1895f2ca9444606c43b97254cc790cef018c423cb31eb7287555e_sk
+      path: /home/philips/fabric/Multinode-al/fabric-starter-a/artifacts/crypto-config/peerOrganizations/a.example.com/users/Admin@a.example.com/msp/keystore/8b165d242fc97fdbb449974d87658689c34b2707d2b75a7ba530cee194ff8470_sk
     signedCert:
       path: /home/philips/fabric/Multinode-al/fabric-starter-a/artifacts/crypto-config/peerOrganizations/a.example.com/users/Admin@a.example.com/msp/signcerts/Admin@a.example.com-cert.pem
 
@@ -285,3 +285,13 @@ certificateAuthorities:
         enrollSecret: adminpw
     # [Optional] The optional name of the CA.
     caName: ca.c.example.com
+
+client:
+  organization: a
+  credentialStore:
+    path: "/tmp/hfc-kvs/a"
+    cryptoStore:
+      path: "/tmp/hfc-cvs/a"
+  connection:
+    options:
+      grpc.keepalive_time_ms: 120000

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 const{Client} = require('fabric-client');
-const { FileSystemWallet, Gateway } = require('fabric-network');
+const { FileSystemWallet, Gateway, Global } = require('fabric-network');
 const wallet = new FileSystemWallet(__dirname +'/config/identity/Admin/wallet');
 
 async function main() {
@@ -26,27 +26,47 @@ async function main() {
     const fabCAService = certAuth.getFabricCAServices();
 
     const crypto = client.getCryptoSuite();
-    crypto.generateKey().then(function(key){
-        console.log(key);
-        
-        return key
-        }).then(function(key){
-            const sk = key.getSKI();
-            const pub = key.getPublicKey();
-            console.log(sk+'_sk');
-            console.log(pub);
-            const keybytes = key.toBytes();
-            console.log(keybytes);
-            const cert = crypto.sign(key,sk);
-            console.log(cert);
-            
-                        
-        });
     
-    
-   
+    const admin = gateway.getCurrentIdentity();
+	admin.setRoles(["user"]);
+	console.log(admin.getRoles());
+	console.log(admin.getIdentity());
+    const HFREGISTRARATTRIBUTES = '*';
+    const HFREGISTRARROLES = ["doctor","patient"];
+    const KeyValueAttribute =[ {
+        key : "",
+        value: "",
+        ecert: true
+    }]
 
-
+    const RegisterRequest = {
+        enrollmentID : "admin",
+	enrollmentSecret : "adminpw",
+        role : "user",
+        affiliation: "",
+        maxEnrollments: 10,
+        attrs : KeyValueAttribute
+    }
+    await fabCAService.register(RegisterRequest, admin).then (res =>{
+       console.log(res);
+/*	var key = res.key;
+	const pubKey = key.getPublicKey();
+ 	const ski = key.getSKI();
+	const keybytes = key.toBytes();
+	console.log(keybytes);
+     fs.writeFile(__dirname + '/config/keys/certificate', res.certificate, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    });
+     fs.writeFile(__dirname + '/config/keys/'+ski+'_sk', keybytes, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    });
+	
+    console.log("The file was saved!"); */
+}); 
     
     } catch (error) {
         console.log(`Error  ${error}`);

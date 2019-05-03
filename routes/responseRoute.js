@@ -6,7 +6,9 @@ module.exports = function(app) {
 	const fs = require('fs');
 	const yaml = require('js-yaml');
 	const { FileSystemWallet, Gateway } = require('fabric-network');
+	//userID = req.body.userid;
 
+	//const wallet = new FileSystemWallet(__dirname +'/../config/identity/'+userID+'/wallet');
 	const wallet = new FileSystemWallet(__dirname +'/../config/identity/User1/wallet');
 
 	async function main() {
@@ -55,6 +57,7 @@ module.exports = function(app) {
 	    console.log('Submit response transaction.');
 			console.log(txnID);
 			console.log(txnID._transaction_id);
+			//userID = req.body.userid;
 
 	    const issueResponse = await requestTxn.submit(req.body.reqID, req.body.response, req.body.patID);
 	
